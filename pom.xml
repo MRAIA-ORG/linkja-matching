@@ -12,14 +12,14 @@
         <main.runnable.class>org.linkja.matching.Runner</main.runnable.class>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
 
-        <junit.jupiter.version>5.3.2</junit.jupiter.version>
-        <mockito.version>2.21.0</mockito.version>
-        <maven.surefire.version>2.22.1</maven.surefire.version>
+        <junit.jupiter.version>5.11.4</junit.jupiter.version>
+        <mockito.version>5.22.0</mockito.version>
+        <maven.surefire.version>3.5.5</maven.surefire.version>
         <commons.io.version>2.5</commons.io.version>
-        <javafx.version>11.0.1</javafx.version>
+        <javafx.version>25.0.2</javafx.version>
     </properties>
 
     <repositories>
@@ -64,25 +64,20 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.14</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.7</version>
+            <version>2.21.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-csv -->
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-csv</artifactId>
-          <version>1.8</version>
+          <version>1.14.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.41.2.2</version>
+            <version>3.51.3.0</version>
         </dependency>
 
         <dependency>
@@ -174,7 +169,7 @@
                 <!-- Build an executable JAR -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.5.0</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -185,6 +180,16 @@
                     </archive>
                 </configuration>
             </plugin>
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-compiler-plugin</artifactId>
+			  <version>3.15.0</version>
+			  <configuration>
+				<compilerArgs>
+				  <arg>-Xlint:deprecation</arg>
+				</compilerArgs>
+			  </configuration>
+			</plugin>
         </plugins>
     </build>
 </project>
