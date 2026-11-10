@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [develop, master]
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      # The project has no tests yet, so this compiles and packages only.
+      - name: Package linkja-matching
+        run: mvn -B package
+
+      # One jar holds the JavaFX files of one platform. Prove each platform resolves.
+      - name: Resolve JavaFX for each platform
+        run: |
+          for c in win linux mac mac-aarch64; do
+            mvn -B -q dependency:resolve -Djavafx.classifier=$c
+          done
