@@ -2,7 +2,7 @@
 Code to match patients across multiple hospitals
 
 ## Building
-linkja-matching was built using Java 10 (specifically [OpenJDK](https://openjdk.java.net/)).  It can be opened from within an IDE like Eclipse or IntelliJ IDEA and compiled, or compiled from the command line using [Maven](https://maven.apache.org/).
+linkja-matching was tested under Java JDK 25 (specifically [Adoptium Temurin JDK](https://adoptium.net/temurin/releases)). It can be opened from within an IDE like Eclipse or IntelliJ IDEA and compiled, or compiled from the command line using [Maven](https://maven.apache.org/).
 
 You can build linkja-matching via Maven:
 
