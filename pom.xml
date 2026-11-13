@@ -12,20 +12,47 @@
         <main.runnable.class>org.linkja.matching.Runner</main.runnable.class>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+        <maven.compiler.release>25</maven.compiler.release>
 
-        <junit.jupiter.version>5.11.4</junit.jupiter.version>
-        <mockito.version>5.22.0</mockito.version>
-        <maven.surefire.version>3.5.5</maven.surefire.version>
-        <commons.io.version>2.5</commons.io.version>
-        <javafx.version>25.0.2</javafx.version>
+        <maven.surefire.version>3.6.1</maven.surefire.version>
+        <commons.io.version>2.22.0</commons.io.version>
+        <javafx.version>27.0.1</javafx.version>
     </properties>
+
+    <!--
+      JavaFX ships one jar per platform, and the mac and mac-aarch64 jars hold
+      native files with the same names. So one jar of this program can carry the
+      JavaFX natives of one platform only. A profile picks the platform of the
+      build machine. To build for another platform, give the classifier, e.g.
+      mvn package -Djavafx.classifier=mac-aarch64
+    -->
+    <profiles>
+        <profile>
+            <id>javafx-win</id>
+            <activation><os><family>windows</family><arch>amd64</arch></os></activation>
+            <properties><javafx.classifier>win</javafx.classifier></properties>
+        </profile>
+        <profile>
+            <id>javafx-linux</id>
+            <activation><os><name>linux</name><arch>amd64</arch></os></activation>
+            <properties><javafx.classifier>linux</javafx.classifier></properties>
+        </profile>
+        <profile>
+            <id>javafx-mac</id>
+            <activation><os><family>mac</family><arch>x86_64</arch></os></activation>
+            <properties><javafx.classifier>mac</javafx.classifier></properties>
+        </profile>
+        <profile>
+            <id>javafx-mac-aarch64</id>
+            <activation><os><family>mac</family><arch>aarch64</arch></os></activation>
+            <properties><javafx.classifier>mac-aarch64</javafx.classifier></properties>
+        </profile>
+    </profiles>
 
     <repositories>
       <repository>
         <id>linkja-mvn-repo</id>
-        <url>https://raw.github.com/linkja/linkja-mvn-repo/master</url>
+        <url>https://raw.githubusercontent.com/MRAIA-ORG/linkja-mvn-repo/master</url>
         <releases>
           <enabled>true</enabled>
         </releases>
@@ -37,34 +64,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <version>${junit.jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.21.0</version>
+            <version>${commons.io.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-csv -->
@@ -77,31 +79,47 @@
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.51.3.0</version>
+            <version>3.54.1.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>${javafx.classifier}</classifier>
+            <!-- Keep out the JavaFX jars of the build machine. See the profiles above. -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>${javafx.classifier}</classifier>
+            <!-- Keep out the JavaFX jars of the build machine. See the profiles above. -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics </artifactId>
-            <version>${javafx.version}</version>
-            <classifier>win</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics </artifactId>
-            <version>${javafx.version}</version>
-            <classifier>linux</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics </artifactId>
-            <version>${javafx.version}</version>
-            <classifier>mac</classifier>
+            <classifier>${javafx.classifier}</classifier>
+            <!-- Keep out the JavaFX jars of the build machine. See the profiles above. -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -119,14 +137,15 @@
 
     <build>
         <plugins>
-            <!-- JUnit 5 requires Surefire version 2.22.1 or higher -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.11.0</version>
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
@@ -144,12 +163,18 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.8.0</version>
                 <configuration>
                     <archive>
                         <manifest>
                             <mainClass>${main.runnable.class}</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <!-- Java 25 warns when JavaFX and linkja-crypto load their C libraries without this. -->
+                            <Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
+                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -169,7 +194,7 @@
                 <!-- Build an executable JAR -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.5.1</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -177,19 +202,44 @@
                             <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>${main.runnable.class}</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <!-- Java 25 warns when JavaFX and linkja-crypto load their C libraries without this. -->
+                            <Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
 			<plugin>
 			  <groupId>org.apache.maven.plugins</groupId>
 			  <artifactId>maven-compiler-plugin</artifactId>
-			  <version>3.15.0</version>
+			  <version>3.16.0</version>
 			  <configuration>
 				<compilerArgs>
 				  <arg>-Xlint:deprecation</arg>
 				</compilerArgs>
 			  </configuration>
 			</plugin>
+            <!-- Pin every default lifecycle plugin, so the build is the same on each machine. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.5.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.5.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
         </plugins>
     </build>
 </project>
