@@ -10,7 +10,7 @@ You can build linkja-matching via Maven:
 
 This compiles the code and puts an executable JAR with all dependency JARs in the `target` folder, e.g. `target/Matching-1.3.0-jar-with-dependencies.jar`. The project has no unit tests yet.
 
-The GUI uses JavaFX, and JavaFX has one set of JARs per platform. The JAR you build holds the JavaFX files of one platform only, so `--gui` runs only on that platform. Command-line matching and `--decrypt` run from any of the JARs. By default the JAR gets the JavaFX files of the machine you build on. To build for another platform, name it with `javafx.classifier`, e.g. for an Apple Silicon Mac:
+The GUI uses JavaFX, and JavaFX has one set of JARs per platform. The JAR you build holds the JavaFX files of one platform only, so `--gui` runs only on that platform. Command-line matching and `--decrypt` run from any of the JARs. By default the JAR gets the JavaFX files of the machine you build on. Linux and Windows on arm64 have no default, so name a platform there. To build for another platform, name it with `javafx.classifier`, e.g. for an Apple Silicon Mac:
 
 `mvn clean package -Djavafx.classifier=mac-aarch64`
 
@@ -41,7 +41,7 @@ This can be the same directory as the linkja-matching JAR file (e.g., `-Djava.li
 Decryption needs only the public build of the library, because it does not call `createSecureHash`. The library files in the `lib` folder of this repository are an old build: the macOS one does not run on Apple Silicon. To compile the public build, use the `develop` branch of [linkja-crypto](https://github.com/MRAIA-ORG/linkja-crypto). It needs OpenSSL 3, CMake and cmocka (e.g. `brew install openssl@3 cmake cmocka`). From the linkja-crypto folder on macOS:
 
 ```
-export JAVA_HOME=/opt/homebrew/opt/openjdk@25
+export JAVA_HOME="$(/usr/libexec/java_home -v 25 2>/dev/null || brew --prefix openjdk@25)"
 cmake . -DINCLUDE_SECRETS=OFF -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="$(brew --prefix openssl@3)"
 make linkjacrypto
 ```

@@ -26,7 +26,7 @@ jobs:
 
       # Fail if the profile picked the wrong platform: the Linux jar must hold the Linux JavaFX native.
       - name: Check the jar holds Linux JavaFX
-        run: unzip -l target/*-jar-with-dependencies.jar | grep -q 'libglass.so$'
+        run: unzip -l target/*-jar-with-dependencies.jar | grep 'libglass.so$' > /dev/null
 
       # One jar holds the JavaFX files of one platform. Prove each platform resolves.
       - name: Resolve JavaFX for each platform
