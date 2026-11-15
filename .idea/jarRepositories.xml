@@ -14,7 +14,7 @@
     <remote-repository>
       <option name="id" value="linkja-mvn-repo" />
       <option name="name" value="linkja-mvn-repo" />
-      <option name="url" value="https://raw.github.com/linkja/linkja-mvn-repo/master" />
+      <option name="url" value="https://raw.githubusercontent.com/MRAIA-ORG/linkja-mvn-repo/master" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="jboss.community" />
