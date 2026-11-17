@@ -1,0 +1,21 @@
+# Dependabot checks dependencies once a week and opens one grouped PR per ecosystem.
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: weekly
+    target-branch: develop
+    open-pull-requests-limit: 2
+    groups:
+      maven:
+        patterns: ["*"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    target-branch: develop
+    open-pull-requests-limit: 2
+    groups:
+      github-actions:
+        patterns: ["*"]
