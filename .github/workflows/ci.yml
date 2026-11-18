@@ -34,3 +34,77 @@ jobs:
           for c in win linux mac mac-aarch64; do
             mvn -B -q dependency:resolve -Djavafx.classifier=$c
           done
+
+  # The golden tests of linkja-workspace, on this commit of linkja-matching and
+  # the develop tip of the other programs. A change to the decrypted hash values
+  # or to the Global IDs fails here, before it merges. The steps copy the jobs
+  # golden-hashing and golden-matching in the linkja-workspace file
+  # .github/workflows/ci.yml. Change them there first, then here.
+  # Only PRs into develop: on master, linkja-matching would be tested against
+  # the develop tip of the other programs.
+  golden-hashing:
+    if: github.base_ref == 'develop'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: linkja-matching
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          repository: MRAIA-ORG/linkja-workspace
+          ref: master
+          path: linkja-workspace
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          repository: MRAIA-ORG/linkja-crypto
+          ref: develop
+          path: linkja-crypto
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          repository: MRAIA-ORG/linkja-hashing
+          ref: develop
+          path: linkja-hashing
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          repository: MRAIA-ORG/linkja-test-data
+          path: linkja-test-data
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - name: Install OpenSSL 3 and CMake
+        run: sudo apt-get update && sudo apt-get install -y libssl-dev cmake
+      - name: Golden test of hashing
+        run: linkja-workspace/scripts/test-golden-hashing.sh
+
+  golden-matching:
+    if: github.base_ref == 'develop'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: linkja-matching
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          repository: MRAIA-ORG/linkja-workspace
+          ref: master
+          path: linkja-workspace
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - name: Golden test of matching
+        run: linkja-workspace/scripts/test-golden-matching.sh
+      - name: Mutations of the golden matching test
+        run: linkja-workspace/scripts/test-golden-matching-mutations.sh
