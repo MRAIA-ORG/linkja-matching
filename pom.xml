@@ -16,7 +16,7 @@
 
         <maven.surefire.version>3.6.1</maven.surefire.version>
         <commons.io.version>2.22.0</commons.io.version>
-        <javafx.version>27.0.1</javafx.version>
+        <javafx.version>27.0.1.1</javafx.version>
     </properties>
 
     <!--
